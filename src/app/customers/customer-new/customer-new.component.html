@@ -1,0 +1,74 @@
+
+  <mat-card >
+    <div class="close-button-container">
+      <button mat-icon-button class="close-button"  matTooltip="Close"   matTooltipPosition="right"  [mat-dialog-close]="true">
+        <mat-icon class="close-icon " color="warn">close</mat-icon>
+      </button>
+    </div>
+    <mat-card-title>Create a new customer</mat-card-title>
+    <form [formGroup]="customerForm" (ngSubmit)="saveCustomer();" fxLayoutAlign="center center" fxLayoutGap="10px">
+      <mat-card-content>
+        <div class="grid-container">
+          <mat-form-field appearance="fill">
+            <mat-label>First Name</mat-label>
+            <input matInput id="firstName" type="text" formControlName="firstName" >
+            <mat-error *ngIf="validateControl('firstName') && hasError('firstName', 'required')">First Name is required</mat-error>
+            <mat-error *ngIf="validateControl('firstName') && hasError('firstName', 'maxLength')">Maximum length is 60</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Last Name</mat-label>
+            <input matInput id="lastName" type="text" formControlName="lastName" >
+            <mat-error *ngIf="validateControl('lastName') && hasError('lastName', 'maxLength')">Maximum length is 60</mat-error>
+          </mat-form-field>
+        </div>
+        <mat-radio-group aria-label="Gender" formControlName="gender" appearance="fill">
+          <mat-label>Gender </mat-label> &nbsp;&nbsp;&nbsp;
+          <mat-radio-button name="gender"  id="male" value="male">Male</mat-radio-button>&nbsp;
+          <mat-radio-button name="gender"  id="female" value="female">Female</mat-radio-button>
+          <mat-error *ngIf="validateControl('gender') && hasError('gender', 'required')">Gender is required</mat-error>
+        </mat-radio-group>
+
+        <mat-form-field appearance="fill" style="padding-top: inherit;">
+          <mat-label>Date of Birth</mat-label>
+          <input matInput id="dob" [max]="maxDate"  formControlName="dob" [matDatepicker]="picker" >
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="validateControl('dob') && hasError('dob', 'required')">Date of Birth is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput id="email" type="text" formControlName="email" >
+          <mat-hint>Ex. pat@example.com</mat-hint>
+          <mat-error *ngIf="validateControl('email') && hasError('email', 'required')">Email is required</mat-error>
+          <mat-error *ngIf="validateControl('email') && hasError('email', 'email')">Maximum length is 400</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Phone No</mat-label>
+          <input matInput id="phoneNo" type="text" formControlName="phoneNo" >
+          <mat-error *ngIf="validateControl('phoneNo') && hasError('phoneNo', 'required')">Phone No is required</mat-error>
+          <mat-error *ngIf="validateControl('phoneNo') && hasError('phoneNo', 'pattern')">Enter Valid Phone Number</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Address</mat-label>
+          <textarea matInput id="address"  formControlName="address"  placeholder="Address"></textarea>
+          <mat-error *ngIf="validateControl('address') && hasError('address', 'required')">Address is required</mat-error>
+          <mat-error *ngIf="validateControl('address') && hasError('address', 'pattern')">Enter Valid Phone Number</mat-error>
+        </mat-form-field>
+
+      </mat-card-content>
+      <mat-card-actions>
+      <button type="submit"  mat-raised-button  matTooltip="Submit Form Details"   matTooltipPosition="above"  color="primary">Submit</button>
+      <button type="button"  mat-raised-button  matTooltip="Reset Form"   matTooltipPosition="above"  color="primary" (click)="resetForm();">Reset</button>
+      </mat-card-actions>
+
+    </form>
+
+  </mat-card>
+
+
+

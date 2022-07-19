@@ -1,0 +1,32 @@
+.row {
+  display: flex;
+  width: 100%;
+}
+
+.child-row {
+  margin: 5px;
+}
+
+.caption {
+  width: 30%;
+  text-align: left;
+}
+
+.result {
+  width: 70%;
+  text-align: left;
+}
+
+.row content {
+  width: 100%;
+}
+
+/* ::ng-deep .cdk-overlay-pane {
+  width: 35%;
+  max-width: ""!important;
+} */
+
+.close-button-container{
+  width: 100%;
+  text-align: right;
+}

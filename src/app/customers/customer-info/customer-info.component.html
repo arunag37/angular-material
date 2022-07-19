@@ -1,0 +1,58 @@
+  <mat-card  class="example-card">
+    <mat-card-title>{{custData.firstName+'  ' + custData.lastName}}</mat-card-title>
+    <br>
+    <br>
+    <mat-card-content>
+      <hr>
+      <div class="row">
+        <div class="child-row caption">
+          <p >Email :</p>
+        </div>
+        <div class="child-row result">
+          <p >{{custData.email}}</p>
+        </div>
+    </div>
+    <hr>
+      <div class="row" >
+        <div class="child-row caption">
+          <p >Phone No : </p>
+        </div>
+        <div class="child-row result">
+          <p >{{custData.phoneNo}}</p>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="child-row caption">
+        <p >Gender :</p>
+      </div>
+      <div class="child-row result">
+        <p >{{custData.gender}}</p>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="child-row caption">
+        <p >Date of Birth :</p>
+      </div>
+      <div class="child-row result">
+        <p >{{custData.dob | date : 'dd MMM yyyy' }}</p>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="child-row caption">
+        <p >Address :</p>
+      </div>
+      <div class="child-row result">
+        <p >{{custData.address}}</p>
+      </div>
+    </div>
+    <hr>
+    </mat-card-content>
+    <mat-card-actions style="text-align: right;">
+      <button mat-button color="primary" [mat-dialog-close]="true">Close</button>
+    </mat-card-actions>
+
+  </mat-card>
+

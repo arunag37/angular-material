@@ -1,0 +1,10 @@
+<section fxLayout="column" fxLayoutAlign="center center">
+  <h1 mat-dialog-title>Please Confirm</h1>
+  <mat-dialog-content>
+    <p>Are you sure to delete?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button type="button" (click)="sendStatus(false);" mat-raised-button color="basic" [mat-dialog-close]="true">Cancel</button>
+    <button type="button" (click)="sendStatus(true);" mat-raised-button color="primary" [mat-dialog-close]="true">Yes</button>
+  </mat-dialog-actions>
+</section>
