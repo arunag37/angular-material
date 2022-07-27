@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CustomersRoutingModule } from './customers-routing.module';
+import { CustomerRoutingModule } from './customer-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
 import { CustomerListComponent } from './customer-list/customer-list.component';
@@ -11,6 +11,11 @@ import { CustomerInfoComponent } from './customer-info/customer-info.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule} from '@angular/material/paginator';
+
+
+import {StoreModule} from '@ngrx/store';
+import {customerFeatureKey, reducer} from './store/reducer/customer.reducer';
+import { HttpClientModule } from '@angular/common/http'
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -27,6 +32,8 @@ import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/mater
 import { MatDividerModule } from '@angular/material/divider';
 import { MatBadgeModule } from '@angular/material/badge';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { EffectsModule } from '@ngrx/effects';
+import { CustomerEffects } from './effects/customer.effects';
 @NgModule({
   declarations: [
     CustomerListComponent,
@@ -35,7 +42,9 @@ import {MatTooltipModule} from '@angular/material/tooltip';
   ],
   imports: [
     CommonModule,
-    CustomersRoutingModule,
+    HttpClientModule,
+    StoreModule.forFeature(customerFeatureKey, reducer),
+    CustomerRoutingModule,
     SharedModule,
     ReactiveFormsModule,
     MatTableModule,
@@ -56,10 +65,12 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatSnackBarModule,
     MatDividerModule,
     MatBadgeModule,
-    MatTooltipModule
+    MatTooltipModule,
+    EffectsModule.forFeature([CustomerEffects]),
+
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}
   ]
 })
-export class CustomersModule { }
+export class CustomerModule { }

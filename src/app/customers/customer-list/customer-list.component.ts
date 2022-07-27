@@ -1,37 +1,85 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator} from '@angular/material/paginator';
 import { MatTableDataSource} from '@angular/material/table';
-import { Customer, customerData} from 'src/app/models/customers';
+import { Customer} from 'src/app/models/customers';
 import { MatSort, Sort} from '@angular/material/sort';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DeleteDialogConfirmationComponent } from 'src/app/shared/delete-dialog-confirmation/delete-dialog-confirmation.component';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import { MatSnackBar} from '@angular/material/snack-bar';
 import { CustomerNewComponent } from '../customer-new/customer-new.component';
 import { CustomerInfoComponent } from '../customer-info/customer-info.component';
+import {selectAllCustomers, selectTotalCustomers,selectCustomerById, getLoadingStatus} from '../store/selector/customer.selectors';
+import { CustomerState} from '../store/reducer/customer.reducer';
+import { select, Store} from '@ngrx/store';
+import { loadingCustomers, removeCustomer, updateCustomerStatus } from '../store/action/customer.actions';
+import { Status } from 'src/app/models/status';
+import { ProgressSpinnerDialogComponent } from "src/app/shared/progress-spinner-dialog/progress-spinner-dialog.component";
 
 @Component({
   selector: 'app-customer-list',
   templateUrl: './customer-list.component.html',
   styleUrls: ['./customer-list.component.css']
 })
-export class CustomerListComponent implements AfterViewInit {
+export class CustomerListComponent implements AfterViewInit,OnInit {
+  public dataSource: MatTableDataSource<Customer>;
+  displayedColumns: string[] = ['firstName', 'gender','address', 'dob','email' ,'phoneNo','isActive','details','delete'];
+  statuses: Status[] = [
+    {value: true, viewValue: 'Active'},
+    {value: false, viewValue: 'InActive'},
+  ];
 
-  displayedColumns: string[] = ['firstName', 'gender','address', 'dob','email' ,'phoneNo','details','delete'];
-  dataSource = new MatTableDataSource<Customer>(customerData);
-  customerCount :number | undefined;
+  customerCount :number =0;
+  customers: Customer[] | undefined;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   dialogConfig: MatDialogConfig<any> | undefined;
+  updatedCustomer: Customer | undefined ;
 
-
-  constructor (private dialog: MatDialog,private _snackBar: MatSnackBar) {
-    this.updateCustomerCount();
+  constructor (private dialog: MatDialog,private _snackBar: MatSnackBar,private store: Store<CustomerState>) {
+    this.dataSource=new MatTableDataSource(this.customers);
   }
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
 
+  ngAfterViewInit() {
+    this.loadCustomers();
+  }
+
+  public ngOnInit(): void {
+    this.loadCustomerCount();
+    this.showProgressbar();
+  }
+
+  showProgressbar() :void {
+    this.store.pipe(select(getLoadingStatus))
+    .subscribe((loadingStatus) =>
+    {
+      console.log("loading : "+ loadingStatus);
+      if(loadingStatus==true) {
+        this.dialog.open(ProgressSpinnerDialogComponent, {
+          data: loadingStatus,
+          panelClass: 'transparent',
+        });
+      }
+      else {
+        this.dialog.closeAll();
+      }
+    }
+    )
+  }
+
+  loadCustomers() {
+    this.store.dispatch(loadingCustomers());
+    this.store.pipe(select(selectAllCustomers))
+    .subscribe((customers) =>{
+      this.dataSource = new MatTableDataSource(customers),
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    });
+  }
+
+  loadCustomerCount() {
+    this.store.pipe(select(selectTotalCustomers))
+    .subscribe((custCount) =>{this.customerCount =custCount});
   }
 
   doFilter(target :any) :void{
@@ -39,17 +87,16 @@ export class CustomerListComponent implements AfterViewInit {
   }
 
   redirectToDetails(id :number):void {
-    const dialogConfig = new MatDialogConfig();
 
-    const dialogRef = this.dialog.open(CustomerInfoComponent, {
-      data: customerData.filter(x =>x.id==id)[0],
+    this.store.pipe(select(selectCustomerById(id)))
+    .subscribe((customer) =>
+    this.dialog.open(CustomerInfoComponent, {
+      data: customer,
       width:"35%"
-    });
-    console.log(customerData);
-
+    }));
   }
 
-  redirectToDelete(id :number):void {
+  redirectToDelete(item :Customer):void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
@@ -57,35 +104,32 @@ export class CustomerListComponent implements AfterViewInit {
 
     dialogRef.afterClosed().subscribe(
       data => {if(data===true){
-        this.deleteCustomer(id);
+        this.deleteCustomer(item);
 
       }}
     );
+  }
 
+  deleteCustomer(customer :Customer): void {
+
+     this.store.dispatch(removeCustomer(customer));
+     this._snackBar.open('Customer Deleted Successfully', 'Ok');
   }
-  deleteCustomer(id :number): void {
-    var removeIndex = customerData.map(function(item) { return item.id; }).indexOf(id);
-    if(removeIndex!=-1) {
-      customerData.splice(removeIndex, 1);
-      this.dataSource.data=customerData;
-      this._snackBar.open('Customer Deleted Successfully', 'Ok');
-      this.updateCustomerCount();
-    }
-  }
+
   newCustomer(): void {
     const dialogConfig = new MatDialogConfig();
     const dialogRef = this.dialog.open(CustomerNewComponent,{
       width:"50%"
     });
     dialogRef.afterClosed().subscribe(x => {
-      this.dataSource.data=customerData;
-      this.updateCustomerCount();
     });
 
   }
 
-  updateCustomerCount() {
-    this.customerCount =customerData.length;
+  statusChange(selectedCustomer :Customer,status : boolean) :void {
+    console.log("asdfghj");
+    this.store.dispatch(updateCustomerStatus({modifiedCustomer:selectedCustomer,status:status}));
+
   }
 
 }

@@ -60,6 +60,17 @@
           <mat-error *ngIf="validateControl('address') && hasError('address', 'pattern')">Enter Valid Phone Number</mat-error>
         </mat-form-field>
 
+        <mat-form-field appearance="fill">
+          <mat-label>Status</mat-label>
+          <mat-select  id="isActive"  formControlName="isActive" >
+            <mat-option *ngFor="let status of statuses" [value]="status.value">
+              {{status.viewValue}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="validateControl('isActive') && hasError('isActive', 'required')">Status is required</mat-error>
+
+        </mat-form-field>
+
       </mat-card-content>
       <mat-card-actions>
       <button type="submit"  mat-raised-button  matTooltip="Submit Form Details"   matTooltipPosition="above"  color="primary">Submit</button>

@@ -49,6 +49,15 @@
       </div>
     </div>
     <hr>
+    <div class="row">
+      <div class="child-row caption">
+        <p >Status :</p>
+      </div>
+      <div class="child-row result">
+        <p >{{(custData.isActive ? "Active" : "InActive")}}</p>
+      </div>
+    </div>
+    <hr>
     </mat-card-content>
     <mat-card-actions style="text-align: right;">
       <button mat-button color="primary" [mat-dialog-close]="true">Close</button>
