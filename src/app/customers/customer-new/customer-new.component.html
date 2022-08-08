@@ -5,8 +5,9 @@
         <mat-icon class="close-icon " color="warn">close</mat-icon>
       </button>
     </div>
-    <mat-card-title>Create a new customer</mat-card-title>
-    <form [formGroup]="customerForm" (ngSubmit)="saveCustomer();" fxLayoutAlign="center center" fxLayoutGap="10px">
+    <mat-card-title *ngIf="!isEdit" >Create a new customer</mat-card-title>
+    <mat-card-title *ngIf="isEdit">Edit Customer</mat-card-title>
+    <form [formGroup]="customerForm" (ngSubmit)="submit();" fxLayoutAlign="center center" fxLayoutGap="10px">
       <mat-card-content>
         <div class="grid-container">
           <mat-form-field appearance="fill">
@@ -74,7 +75,7 @@
       </mat-card-content>
       <mat-card-actions>
       <button type="submit"  mat-raised-button  matTooltip="Submit Form Details"   matTooltipPosition="above"  color="primary">Submit</button>
-      <button type="button"  mat-raised-button  matTooltip="Reset Form"   matTooltipPosition="above"  color="primary" (click)="resetForm();">Reset</button>
+      <button type="button"  mat-raised-button  matTooltip="Reset Form"   matTooltipPosition="above"  color="primary" *ngIf="!isEdit" (click)="resetForm();">Reset</button>
       </mat-card-actions>
 
     </form>

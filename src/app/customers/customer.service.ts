@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Customer } from '../models/customers';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { CustomerPage } from '../models/customerPage';
+import { CustomerParams } from '../models/customer-params';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,10 +17,16 @@ export class CustomerService {
   };
   constructor( private http: HttpClient) { }
 
-  getAllCustomers(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.serverUrl)
+  getAllCustomers(param :CustomerParams): Observable<CustomerPage> {
+    let params = new HttpParams()
+    .set('pageIndex', param.pageIndex!)
+    .set('pageSize',  param.pageSize!)
+    .set('sortField',  param.sortField!)
+    .set('sortDirection',  param.sortDirection!);
+    if (param.filter) params = params.set('searchKey', param.filter);
+    return this.http.get<CustomerPage>(this.serverUrl+'/pagination',{ params })
     .pipe(
-      catchError(this.handleError<Customer[]>('getCustomers', []))
+      catchError(this.handleError<CustomerPage>('getCustomers'))
     );
   }
 
@@ -35,6 +44,11 @@ export class CustomerService {
     return this.http.patch<Customer>(this.serverUrl+'/'+customer.id,status)
   }
 
+  updateCustomerDetails(id:number,customer: Customer): Observable<Customer> {
+    return this.http.put<Customer>(this.serverUrl+'/'+id, customer, this.httpOptions).pipe(
+      catchError(this.handleError<Customer>('updateCustomer'))
+    );
+  }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

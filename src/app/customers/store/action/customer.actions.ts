@@ -1,6 +1,8 @@
 import { Action, createAction, props } from '@ngrx/store';
 import { CustomerParams } from 'src/app/models/customer-params';
+import { CustomerPage } from 'src/app/models/customerPage';
 import { Customer } from 'src/app/models/customers';
+
 
 
 export enum CustomerActionType {
@@ -12,17 +14,20 @@ export enum CustomerActionType {
   RemoveCustomer = '[Customer] Remove Customer',
   RemoveCustomerSuccess = '[Customer] Remove Customer Success',
   UpdateCustomerState ='[Customer] Update Customer Status',
-  UpdateCustomerStateSuccess ='[Customer] Update Customer Status Success'
+  UpdateCustomerStateSuccess ='[Customer] Update Customer Status Success',
+  UpdateCustomerDetails="[Customer] Update Customer",
+  UpdateCustomerDetailsSuccess = "[Customer] Update Customer Success",
 
 }
 
 export const loadingCustomers = createAction(
-  CustomerActionType.Loading
+  CustomerActionType.Loading,
+  (param: CustomerParams) => ({param})
 );
 
 export const loadCustomersSuccess = createAction(
   CustomerActionType.LoadCustomersSuccess,
-  props<{ response: Customer[] }>()
+  props<{ response: CustomerPage }>()
 );
 
 export const loadCustomersFailure = createAction(
@@ -58,4 +63,14 @@ export const updateCustomerStatus = createAction(
 export const updateCustomerStatusSuccess = createAction(
   CustomerActionType.UpdateCustomerStateSuccess,
   (modifiedCustomer: Customer) => ({modifiedCustomer})
+);
+
+export const updateCustomerDetails = createAction(
+  CustomerActionType.UpdateCustomerDetails,
+ (id:number, modifiedCustomer: Customer) => ({id,modifiedCustomer})
+);
+
+export const updateCustomerDetailsSuccess = createAction(
+  CustomerActionType.UpdateCustomerDetailsSuccess,
+  props<{ modifiedCustomer: Customer }>()
 );

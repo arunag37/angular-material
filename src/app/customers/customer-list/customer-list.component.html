@@ -7,10 +7,15 @@
     <div class="mat-elevation-z8">
       <div fxLayout fxLayoutAlign="center center" class="customer-filter">
         <mat-form-field fxFlex="40%">
-          <input matInput type="text" (keyup)="doFilter($event.target)" placeholder="Filter">
+          <input matInput type="text" (keyup)="doFilter($event.target)" (keydown)="doFilter($event.target)" placeholder="Filter">
         </mat-form-field>
       </div>
-      <table mat-table [dataSource]="dataSource" matSortActive="id" matSortDirection="asc" matSort>
+      <table mat-table [dataSource]="dataSource"  matSort  (matSortChange)="sortData($event)">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Name"> ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.id}}</td>
+        </ng-container>
 
         <!-- Name Column -->
         <ng-container matColumnDef="firstName">
@@ -20,38 +25,38 @@
 
          <!-- Gender Column -->
          <ng-container matColumnDef="gender">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by gender"> Gender </th>
+          <th mat-header-cell *matHeaderCellDef > Gender </th>
           <td mat-cell *matCellDef="let element"> {{element.gender}} </td>
         </ng-container>
 
 
         <!-- Address Column -->
         <ng-container matColumnDef="address">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Address"> Address </th>
+          <th mat-header-cell *matHeaderCellDef > Address </th>
           <td mat-cell *matCellDef="let element"> {{element.address}} </td>
         </ng-container>
 
         <!-- dob Column -->
         <ng-container matColumnDef="dob">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Date of Birth"> Date of Birth </th>
+          <th mat-header-cell *matHeaderCellDef > Date of Birth </th>
           <td mat-cell *matCellDef="let element"> {{element.dob | date: 'dd MMM yyyy' }} </td>
         </ng-container>
 
         <!-- email Column -->
          <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by email"> Email </th>
+          <th mat-header-cell *matHeaderCellDef > Email </th>
           <td mat-cell *matCellDef="let element"> {{element.email}} </td>
         </ng-container>
 
 
         <!-- phoneNo Column -->
         <ng-container matColumnDef="phoneNo">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Phone No "> Phone No </th>
+          <th mat-header-cell *matHeaderCellDef > Phone No </th>
           <td mat-cell *matCellDef="let element"> {{element.phoneNo}} </td>
         </ng-container>
 
         <ng-container matColumnDef="isActive">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Status "> Status </th>
+          <th mat-header-cell *matHeaderCellDef > Status </th>
           <td mat-cell *matCellDef="let element"> <mat-form-field appearance="fill">
             <mat-label>Status</mat-label>
             <mat-select [value]="element.isActive" (selectionChange)="statusChange(element,$event.value)">
@@ -66,8 +71,18 @@
         <ng-container matColumnDef="details">
           <th mat-header-cell *matHeaderCellDef> Details </th>
           <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="primary"  matTooltip="View Customer Info"   matTooltipPosition="above"  (click)="redirectToDetails(element.id)">
+            <button mat-icon-button color="primary"  (click)="redirectToDetails(element.id)">
                 <mat-icon class="mat-18">reorder</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+         <!-- Edit Column -->
+         <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef> Edit </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="primary"   (click)="redirectToEdit(element.id)">
+                <mat-icon class="mat-18">edit</mat-icon>
             </button>
           </td>
         </ng-container>
@@ -76,7 +91,7 @@
         <ng-container matColumnDef="delete">
           <th mat-header-cell *matHeaderCellDef> Delete </th>
           <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="warn"  matTooltip="Delete Customer"   matTooltipPosition="above"  (click)="redirectToDelete(element)">
+            <button mat-icon-button color="warn"     (click)="redirectToDelete(element)">
                 <mat-icon class="mat-18">delete</mat-icon>
             </button>
           </td>
@@ -84,11 +99,13 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
-
-      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+      <mat-paginator #paginator [length]="customerCount" [pageIndex]="pageIndex" [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+      <!-- <mat-paginator [pageSizeOptions]="[5, 10, 20]"
                      showFirstLastButtons
                      aria-label="Select page of periodic elements">
-      </mat-paginator>
+      </mat-paginator> -->
     </div>
   </mat-card-content>
 </mat-card>

@@ -9,10 +9,10 @@ import { Customer } from 'src/app/models/customers';
 })
 export class CustomerInfoComponent implements OnInit {
 
-  longText :string ="Sample text";
   constructor(@Inject(MAT_DIALOG_DATA) public custData: Customer) {}
 
   ngOnInit(): void {
+    console.log("sasasss");
     console.log(this.custData);
   }
 

@@ -14,13 +14,12 @@ export const selectAllCustomers = createSelector(
 
   export const selectTotalCustomers = createSelector(
     selectCustomerState,
-     (state: customerReducer.CustomerState) => state.customers.length
+     (state: customerReducer.CustomerState) => state.customerCount
    );
 
    export const selectCustomerMaxId = createSelector(
     selectCustomerState,
      (state: customerReducer.CustomerState) => Math.max.apply(Math,  state.customers.map(function(o) {
-      console.log("sss"+(o.id+1));
       return o.id+1;
     }))
   );

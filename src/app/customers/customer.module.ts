@@ -34,6 +34,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { EffectsModule } from '@ngrx/effects';
 import { CustomerEffects } from './effects/customer.effects';
+
 @NgModule({
   declarations: [
     CustomerListComponent,
